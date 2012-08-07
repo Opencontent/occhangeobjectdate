@@ -100,8 +100,9 @@ class OCChangeObjectDate
 
     function extractID( $idVariable, &$idClassString, &$idAttributeString )
     {
+        $idVariable = array_unique( $idVariable );
         if ( is_array( $idVariable ) )
-        {
+        {            
             foreach ( $idVariable as $id )
             {
                 list( $classID, $attributeID ) = explode( "-", $id );
@@ -123,7 +124,7 @@ class OCChangeObjectDate
     function classAttributes()
     {
         $db = eZDB::instance();
-        $query = "SELECT ezcontentclass.id as contentclass_id,
+        $query = "SELECT DISTINCT ezcontentclass.id as contentclass_id,
                          ezcontentclass.identifier as contentclass_identifier,
                          ezcontentclass_attribute.id as contentclass_attribute_id,
                          ezcontentclass_attribute.identifier as contentclass_attribute_identifier
