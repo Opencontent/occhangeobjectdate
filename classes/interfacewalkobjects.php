@@ -9,5 +9,7 @@ interface InterfaceWalkObjects
     public function fetch();
     
     public function modify( &$item, $cli );
+    
+    public static function help();
 }
 ?>

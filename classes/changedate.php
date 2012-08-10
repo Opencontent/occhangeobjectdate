@@ -6,6 +6,11 @@ class ChangeDate implements InterfaceWalkObjects
     private $parentNodeID;
     private $attributeIdentifier; 
     
+    public static function help()
+    {
+        return '--handler=change_date -s<siteaccess> --params="<parentNodeID>;<attribute_identifier>"';
+    }
+    
     public function __construct( $globalParams )
     {
         $globalParams = explode( ';', $globalParams );

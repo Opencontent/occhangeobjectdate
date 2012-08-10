@@ -2,8 +2,13 @@
 #  php extension/occhangeobjectdate/bin/php/walkobjects.php --handler=dummy_handler -s<siteaccess> --params="Node name:"
 class DummyHandler implements InterfaceWalkObjects
 {
-    public $params = array( 'ClassFilterType' => 'include', 'ClassFilterArray' => array( 'image' ) );
+    public $params = array( 'Depth' => 1 );
     public $globalParams;
+    
+    public static function help()
+    {
+        return '--handler=dummy_handler -s<siteaccess> --params="Node name:"';
+    }
     
     public function __construct( $globalParams )
     {
@@ -12,7 +17,7 @@ class DummyHandler implements InterfaceWalkObjects
     
     public function fetchCount()
     {
-        $count = eZContentObjectTreeNode::subTreeCountByNodeID( $this->params, 193062 );
+        $count = eZContentObjectTreeNode::subTreeCountByNodeID( $this->params, 2 );
         
         if ( $count == NULL )
         {
@@ -29,7 +34,7 @@ class DummyHandler implements InterfaceWalkObjects
     
     public function fetch()
     {
-        return eZContentObjectTreeNode::subTreeByNodeID( $this->params, 193062 );
+        return eZContentObjectTreeNode::subTreeByNodeID( $this->params, 2 );
     }
     
     public function modify( &$item, $cli )

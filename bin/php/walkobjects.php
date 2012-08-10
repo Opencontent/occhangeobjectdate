@@ -6,24 +6,35 @@ require 'autoload.php';
 $siteINI = eZINI::instance();
 
 $cli = eZCLI::instance();
-$script = eZScript::instance( array( 'description' => ( "Walk Objects" ),
+$script = eZScript::instance( array( 'description' => "Walk Objects",
                                       'use-session' => true,
                                       'use-modules' => true,
-                                      'use-extensions' => true ) );
+                                      'use-extensions' => true,
+                                      'user' => array( 'login' => 'admin', 'password' => 'gabricecek' )) );
 
 $script->startup();
+
+$script->initialize();
+
+$handlers = eZINI::instance( 'walkobjects.ini' )->variable( 'WalkObjectsHandlers', 'AvaiableHandlers' );
+$params = array();
+$params[] = "Per handler params:";
+foreach( $handlers as $handler )
+{
+    $class = eZINI::instance( 'walkobjects.ini' )->variable( $handler, 'PHPClass' );
+    $params[] = $handler . ": " . $class::help();
+}
 
 $options = $script->getOptions( "[handler:][params:]",
                                 "",
                                 array(
                                       'handler' => "Handler name stored in walkobjects.ini",
-                                      'params' => "Per handler params"
+                                      'params' => implode( "\n", $params )
                                       )
                               );
-$script->initialize();
+
 
 $handlerName = $options['handler'];
-$handlers = eZINI::instance( 'walkobjects.ini' )->variable( 'WalkObjectsHandlers', 'AvaiableHandlers' );
 $handler = false;
 if ( in_array( $handlerName, $handlers ) )
 {
@@ -50,13 +61,6 @@ $length = 50;
 $handler->setFetchParams( array( 'Offset' => 0 , 'Limit' => $length ) );
 
 $script->resetIteration( $count );
-
-$user = eZUser::fetchByName( 'admin' );
-if ( !$user )
-{
-    $user = eZUser::currentUser();
-}
-eZUser::setCurrentlyLoggedInUser( $user, $user->attribute( 'contentobject_id' ) );
 
 do
 {
