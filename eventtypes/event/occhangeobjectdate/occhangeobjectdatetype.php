@@ -59,7 +59,7 @@ class OCChangeObjectDateType extends eZWorkflowEventType
             }
         }
 
-        if ( $publishAttribute instanceof eZContentObjectAttribute )
+        if ( $publishAttribute instanceof eZContentObjectAttribute && $publishAttribute->attribute( 'has_content' ) )
         {
             $date = $publishAttribute->attribute( 'content' );
             if ( $date instanceof eZDateTime || $date instanceof eZDate )
