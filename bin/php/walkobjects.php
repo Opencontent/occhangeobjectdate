@@ -10,9 +10,16 @@ $script = eZScript::instance( array( 'description' => "Walk Objects",
                                       'use-session' => true,
                                       'use-modules' => true,
                                       'use-extensions' => true,
-                                      'user' => array( 'login' => 'admin', 'password' => 'gabricecek' )) );
+                                      ) );
 
 $script->startup();
+
+$options = $script->getOptions( "[handler:][params:]",
+                                "",
+                                array(
+                                      'handler' => "Handler name stored in walkobjects.ini"                                     
+                                      )
+                              );
 
 $script->initialize();
 
@@ -24,15 +31,6 @@ foreach( $handlers as $handler )
     $class = eZINI::instance( 'walkobjects.ini' )->variable( $handler, 'PHPClass' );
     $params[] = $handler . ": " . $class::help();
 }
-
-$options = $script->getOptions( "[handler:][params:]",
-                                "",
-                                array(
-                                      'handler' => "Handler name stored in walkobjects.ini",
-                                      'params' => implode( "\n", $params )
-                                      )
-                              );
-
 
 $handlerName = $options['handler'];
 $handler = false;
@@ -51,6 +49,9 @@ if ( !$handler )
     $script->shutdown();
     eZExecution::cleanExit();
 }
+
+$user = eZUser::fetchByName('admin');
+eZUser::setCurrentlyLoggedInUser( $user, $user->attribute( 'contentobject_id' ) );
 
 $contentObjects = array();
 
