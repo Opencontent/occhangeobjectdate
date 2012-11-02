@@ -61,7 +61,13 @@ $cli->notice( "Number of objects to walk: $count" );
 $length = 50;
 $handler->setFetchParams( array( 'Offset' => 0 , 'Limit' => $length ) );
 
-$script->resetIteration( $count );
+$output = new ezcConsoleOutput();
+$progressBarOptions = array(
+                    'emptyChar'         => ' ',
+                    'barChar'           => '='
+                );
+$progressBar = new ezcConsoleProgressbar( $output, intval( $count ), $progressBarOptions );
+$progressBar->start();
 
 do
 {
@@ -71,6 +77,7 @@ do
     {            
         if ( $handler )
         {
+            $progressBar->advance();
             $handler->modify( &$item, $cli );
         }
     }
@@ -78,6 +85,10 @@ do
     $handler->params['Offset'] += $length;
 } while ( count( $items ) == $length );
 
+$progressBar->finish();
+$memoryMax = memory_get_peak_usage(); // Result is in bytes
+$memoryMax = round( $memoryMax / 1024 / 1024, 2 ); // Convert in Megabytes
+$cli->notice( 'Peak memory usage : '.$memoryMax.'M' );
 
 $script->shutdown();
 ?>
