@@ -66,7 +66,7 @@ class OCChangeObjectDateType extends eZWorkflowEventType
             {
                 $object->setAttribute( 'published', $date->timeStamp() );
                 $object->store();
-                eZContentOperationCollection::registerSearchObject( $object->attribute( 'id' ) );
+                eZContentOperationCollection::registerSearchObject( $object->attribute( 'id' ), $object->attribute( 'current_version' ) );
                 eZDebug::writeNotice( 'Workflow change object publish date', __METHOD__ );
             }
         }

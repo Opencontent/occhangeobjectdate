@@ -97,7 +97,10 @@ class ChangeDate implements InterfaceWalkObjects
             }
         }
         if ( $done )
+        {
             $cli->notice( '*', false );
+            eZContentOperationCollection::registerSearchObject( $item->attribute( 'object' )->attribute( 'id' ), $item->attribute( 'object' )->attribute( 'current_version' ) );
+        }
         else
             $cli->notice( '.', false );
         return;

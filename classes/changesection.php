@@ -32,9 +32,11 @@ class ChangeSection implements InterfaceWalkObjects
             $classAttribute = explode( '/', $classAttribute );
             if ( is_array( $classAttribute ) && count( $classAttribute ) > 1 )
             {
-                $this->attributeIdentifiers[$classAttribute[0]] = $classAttribute[1];
+                $this->attributeIdentifiers[$classAttribute[0]][] = $classAttribute[1];
             }
-        }        
+        }
+        $classes = array_keys( $this->attributeIdentifiers );
+        $this->params['ClassFilterArray'] = $classes;        
     }
     
     public function fetchCount()
@@ -101,8 +103,8 @@ class ChangeSection implements InterfaceWalkObjects
             if( $object instanceof eZContentObject === false )
             {
                 continue;
-            }
-            $attributes = $object->fetchAttributesByIdentifier( array( $this->attributeIdentifiers[$item->attribute( 'class_identifier' )] ) );
+            }            
+            $attributes = $object->fetchAttributesByIdentifier( $this->attributeIdentifiers[$item->attribute( 'class_identifier' )] );
             foreach( $attributes as $attribute )
             {
                 if ( $attribute->hasContent() )
@@ -122,6 +124,13 @@ class ChangeSection implements InterfaceWalkObjects
                         $unpublishTimestamp = $object->attribute( 'published' ) + $timeAdd;
                     }
                     $currentDate = time();
+                    
+                    // fine giornata della data di spubblicazione
+                    if ( $unpublishTimestamp > 0 )
+                    {
+                        $unpublishTimestamp = mktime( 23, 59, 59, date("n", $unpublishTimestamp), date("j", $unpublishTimestamp), date("Y", $unpublishTimestamp) );
+                    }
+                    
                     if (
                             $toSection !== false
                         &&  $unpublishTimestamp > 0

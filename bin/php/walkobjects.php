@@ -23,6 +23,14 @@ $options = $script->getOptions( "[handler:][params:]",
 
 $script->initialize();
 
+$isQuiet = false;
+
+if ( $isQuiet )
+{    
+    $cli->setIsQuiet( true );
+}
+
+
 $handlers = eZINI::instance( 'walkobjects.ini' )->variable( 'WalkObjectsHandlers', 'AvaiableHandlers' );
 $params = array();
 $params[] = "Per handler params:";
@@ -63,9 +71,13 @@ $handler->setFetchParams( array( 'Offset' => 0 , 'Limit' => $length ) );
 
 $output = new ezcConsoleOutput();
 $progressBarOptions = array(
-                    'emptyChar'         => ' ',
-                    'barChar'           => '='
-                );
+    'emptyChar'         => ' ',
+    'barChar'           => '='
+);
+if ( $isQuiet )
+{
+    $progressBarOptions['minVerbosity'] = 10;    
+}
 $progressBar = new ezcConsoleProgressbar( $output, intval( $count ), $progressBarOptions );
 $progressBar->start();
 
@@ -78,7 +90,7 @@ do
         if ( $handler )
         {
             $progressBar->advance();
-            $handler->modify( &$item, $cli );
+            $handler->modify( $item, $cli );
         }
     }
     
