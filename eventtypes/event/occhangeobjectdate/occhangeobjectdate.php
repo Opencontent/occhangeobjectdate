@@ -130,6 +130,7 @@ class OCChangeObjectDate
                          ezcontentclass_attribute.identifier as contentclass_attribute_identifier
                   FROM ezcontentclass, ezcontentclass_attribute
                   WHERE ezcontentclass.id=ezcontentclass_attribute.contentclass_id AND
+                        ezcontentclass.version = " . eZContentClass::VERSION_STATUS_DEFINED . " AND
                         ( ezcontentclass_attribute.data_type_string='ezdatetime' OR
                         ezcontentclass_attribute.data_type_string='ezdate' )
                   ORDER BY ezcontentclass.identifier";

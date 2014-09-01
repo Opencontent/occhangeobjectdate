@@ -12,7 +12,7 @@ class OCChangeObjectDateType extends eZWorkflowEventType
     function OCChangeObjectDateType()
     {
         $this->eZWorkflowEventType( self::WORKFLOW_TYPE_STRING,  ezpI18n::tr( 'occhangeobjectdate/event', "Change object publish date" ) );
-        $this->setTriggerTypes( array( 'content' => array( 'publish' => array( 'after' ) ) ) );
+        $this->setTriggerTypes( array( 'content' => array( 'publish' => array( 'before', 'after' ) ) ) );
     }
 
     /*!
@@ -66,7 +66,10 @@ class OCChangeObjectDateType extends eZWorkflowEventType
             {
                 $object->setAttribute( 'published', $date->timeStamp() );
                 $object->store();
-                eZContentOperationCollection::registerSearchObject( $object->attribute( 'id' ), $object->attribute( 'current_version' ) );
+                if ( $parameters['trigger_name'] != 'pre_publish' )
+                {
+                    eZContentOperationCollection::registerSearchObject( $object->attribute( 'id' ), $object->attribute( 'current_version' ) );
+                }                
                 eZDebug::writeNotice( 'Workflow change object publish date', __METHOD__ );
             }
         }
@@ -146,4 +149,3 @@ class OCChangeObjectDateType extends eZWorkflowEventType
 
 eZWorkflowEventType::registerEventType( OCChangeObjectDateType::WORKFLOW_TYPE_STRING, "occhangeobjectdatetype" );
 
-?>
