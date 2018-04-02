@@ -9,9 +9,9 @@ class OCChangeObjectDateType extends eZWorkflowEventType
     /*!
      Constructor
     */
-    function OCChangeObjectDateType()
+    function __construct()
     {
-        $this->eZWorkflowEventType( self::WORKFLOW_TYPE_STRING,  ezpI18n::tr( 'occhangeobjectdate/event', "Change object publish date" ) );
+        parent::__construct( self::WORKFLOW_TYPE_STRING,  ezpI18n::tr( 'occhangeobjectdate/event', "Change object publish date" ) );
         $this->setTriggerTypes( array( 'content' => array( 'publish' => array( 'before', 'after' ) ) ) );
     }
 
